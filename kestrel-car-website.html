@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KESTREL GT-1 — Built for Velocity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  --bg:            #0a0b0d;
+  --surface:       #14161a;
+  --surface-2:     #1b1e23;
+  --line:          #2a2d33;
+  --text:          #ecede9;
+  --muted:         #8a8d93;
+  --accent:        #e0642a;   /* ember copper — brake-glow */
+  --accent-soft:   #e0642a26;
+  --accent-2:      #3ee6b5;   /* electric teal — EV energy */
+  --car-color:     #d6d8db;   /* live-updated by configurator */
+
+  --f-display: "Big Shoulders Display", sans-serif;
+  --f-body:    "Inter", -apple-system, sans-serif;
+  --f-mono:    "JetBrains Mono", monospace;
+
+  --wrap: 1180px;
+  --radius: 2px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--f-body);
+  line-height:1.5;
+  overflow-x:hidden;
+}
+
+img,svg{display:block;max-width:100%;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+ul{list-style:none;}
+
+.wrap{
+  width:100%;
+  max-width:var(--wrap);
+  margin:0 auto;
+  padding:0 32px;
+}
+
+:focus-visible{
+  outline:2px solid var(--accent-2);
+  outline-offset:3px;
+}
+
+.eyebrow{
+  font-family:var(--f-mono);
+  font-size:12px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+.eyebrow::before{
+  content:"";
+  width:22px;height:1px;
+  background:var(--accent);
+}
+
+h1,h2,h3{
+  font-family:var(--f-display);
+  font-weight:700;
+  letter-spacing:0.01em;
+  line-height:0.95;
+  text-transform:uppercase;
+}
+
+.section{
+  padding:120px 0;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:40px;
+  margin-bottom:64px;
+  flex-wrap:wrap;
+}
+.section-head h2{font-size:clamp(32px,5vw,56px);}
+.section-head p{
+  max-width:340px;
+  color:var(--muted);
+  font-size:15px;
+}
+
+/* reveal-on-scroll */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.is-visible{opacity:1;transform:translateY(0);}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  padding:20px 0;
+  background:rgba(10,11,13,0.7);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--line);
+  transition:padding 0.3s ease;
+}
+.nav .wrap{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-family:var(--f-display);
+  font-weight:900;
+  font-size:22px;
+  letter-spacing:0.04em;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.logo svg{width:26px;height:26px;}
+.nav-links{
+  display:flex;
+  gap:36px;
+  font-size:13px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  font-weight:500;
+}
+.nav-links a{
+  opacity:0.75;
+  position:relative;
+  padding-bottom:4px;
+  transition:opacity 0.2s ease;
+}
+.nav-links a:hover{opacity:1;}
+.nav-links a::after{
+  content:"";
+  position:absolute;left:0;bottom:0;
+  width:0;height:1px;
+  background:var(--accent);
+  transition:width 0.25s ease;
+}
+.nav-links a:hover::after{width:100%;}
+
+.btn{
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  padding:13px 26px;
+  border-radius:var(--radius);
+  transition:transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+.btn-primary{
+  background:var(--accent);
+  color:#100701;
+}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-ghost{
+  border:1px solid var(--line);
+  color:var(--text);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+.nav-toggle{
+  display:none;
+  width:26px;height:20px;
+  position:relative;
+}
+.nav-toggle span{
+  position:absolute;left:0;right:0;height:2px;
+  background:var(--text);
+  transition:0.3s ease;
+}
+.nav-toggle span:nth-child(1){top:0;}
+.nav-toggle span:nth-child(2){top:9px;}
+.nav-toggle span:nth-child(3){top:18px;}
+.nav-toggle.open span:nth-child(1){transform:translateY(9px) rotate(45deg);}
+.nav-toggle.open span:nth-child(2){opacity:0;}
+.nav-toggle.open span:nth-child(3){transform:translateY(-9px) rotate(-45deg);}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding-top:110px;
+  position:relative;
+  background:
+    radial-gradient(ellipse 900px 500px at 80% 20%, var(--accent-soft), transparent 60%),
+    linear-gradient(180deg, #0a0b0d 0%, #0d0f12 100%);
+  overflow:hidden;
+}
+.hero-grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size:80px 100%;
+  pointer-events:none;
+}
+.hero .wrap{
+  display:grid;
+  grid-template-columns:1.1fr 1fr;
+  gap:40px;
+  align-items:center;
+  position:relative;
+  z-index:2;
+}
+.hero-copy h1{
+  font-size:clamp(48px,8.5vw,108px);
+  margin-bottom:24px;
+}
+.hero-copy h1 span{color:var(--accent);}
+.hero-copy p{
+  max-width:420px;
+  color:var(--muted);
+  font-size:17px;
+  margin-bottom:36px;
+}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;}
+
+.hero-art{position:relative;}
+.hero-art svg{width:100%;height:auto;}
+
+/* HUD stat strip */
+.hud{
+  margin-top:90px;
+  border-top:1px solid var(--line);
+  padding-top:40px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  position:relative;
+  z-index:2;
+}
+.gauge{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.gauge-ring{position:relative;width:96px;height:96px;flex:none;}
+.gauge-ring svg{transform:rotate(-90deg);}
+.gauge-ring circle{fill:none;stroke-width:6;}
+.gauge-ring .track{stroke:var(--surface-2);}
+.gauge-ring .fill{
+  stroke:var(--accent-2);
+  stroke-linecap:round;
+  stroke-dasharray:251.2;
+  stroke-dashoffset:251.2;
+  transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1);
+}
+.gauge-value{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-mono);
+  font-size:15px;
+  font-weight:700;
+}
+.gauge-label{
+  font-size:12px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.gauge-label strong{
+  display:block;
+  font-family:var(--f-mono);
+  color:var(--text);
+  font-size:11px;
+  margin-top:4px;
+  letter-spacing:0.05em;
+}
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee{
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+  padding:18px 0;
+  background:var(--surface);
+}
+.marquee-track{
+  display:flex;
+  gap:60px;
+  white-space:nowrap;
+  animation:scroll-left 26s linear infinite;
+  font-family:var(--f-mono);
+  font-size:13px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.marquee-track span{display:flex;align-items:center;gap:60px;}
+.marquee-track em{color:var(--accent);font-style:normal;}
+@keyframes scroll-left{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+
+/* ============================================================
+   DESIGN GALLERY
+   ============================================================ */
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+  background:var(--line);
+}
+.gallery-card{
+  background:var(--surface);
+  padding:40px 32px 32px;
+  min-height:340px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:background 0.3s ease;
+}
+.gallery-card:hover{background:var(--surface-2);}
+.gallery-card .render{height:150px;display:flex;align-items:center;justify-content:center;}
+.gallery-card .render svg{max-height:130px;}
+.gallery-card h3{
+  font-size:15px;
+  letter-spacing:0.08em;
+  margin-bottom:6px;
+}
+.gallery-card p{font-size:13px;color:var(--muted);}
+.gallery-idx{
+  font-family:var(--f-mono);
+  font-size:12px;
+  color:var(--accent);
+  margin-bottom:12px;
+}
+
+/* ============================================================
+   PERFORMANCE
+   ============================================================ */
+.perf-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:64px;
+  align-items:center;
+}
+.perf-graph{
+  background:var(--surface);
+  border:1px solid var(--line);
+  padding:32px;
+  border-radius:var(--radius);
+}
+.perf-graph svg{width:100%;height:auto;}
+.perf-graph-label{
+  display:flex;justify-content:space-between;
+  font-family:var(--f-mono);
+  font-size:11px;
+  color:var(--muted);
+  margin-top:14px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.perf-path{
+  stroke-dasharray:600;
+  stroke-dashoffset:600;
+  transition:stroke-dashoffset 1.8s ease;
+}
+.is-visible .perf-path{stroke-dashoffset:0;}
+
+.spec-list{border-top:1px solid var(--line);}
+.spec-row{
+  display:flex;
+  justify-content:space-between;
+  padding:20px 0;
+  border-bottom:1px solid var(--line);
+}
+.spec-row dt{color:var(--muted);font-size:14px;}
+.spec-row dd{
+  font-family:var(--f-mono);
+  font-size:15px;
+  font-weight:600;
+}
+
+/* ============================================================
+   CONFIGURATOR
+   ============================================================ */
+.config{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:56px;
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:56px;
+  align-items:center;
+}
+.config-art svg{width:100%;}
+.config-panel h3{
+  font-size:24px;
+  margin-bottom:6px;
+}
+.config-current{
+  font-family:var(--f-mono);
+  font-size:13px;
+  color:var(--accent);
+  margin-bottom:28px;
+  display:block;
+  letter-spacing:0.05em;
+}
+.swatches{
+  display:flex;
+  gap:14px;
+  margin-bottom:36px;
+}
+.swatch{
+  width:38px;height:38px;
+  border-radius:50%;
+  border:2px solid transparent;
+  cursor:pointer;
+  position:relative;
+  transition:transform 0.2s ease;
+}
+.swatch:hover{transform:scale(1.1);}
+.swatch.active{border-color:var(--text);}
+.swatch.active::after{
+  content:"";
+  position:absolute;inset:-6px;
+  border:1px solid var(--line);
+  border-radius:50%;
+}
+.toggle-group{
+  display:flex;
+  gap:2px;
+  background:var(--surface-2);
+  padding:4px;
+  border-radius:var(--radius);
+  margin-bottom:8px;
+}
+.toggle-group button{
+  flex:1;
+  padding:10px 14px;
+  font-size:12px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  border-radius:var(--radius);
+  color:var(--muted);
+  transition:background 0.2s ease, color 0.2s ease;
+}
+.toggle-group button.active{
+  background:var(--bg);
+  color:var(--text);
+}
+.toggle-caption{font-size:12px;color:var(--muted);margin-bottom:28px;}
+.price-tag{
+  font-family:var(--f-mono);
+  font-size:28px;
+  font-weight:700;
+  margin-top:8px;
+}
+.price-tag span{font-size:13px;color:var(--muted);font-weight:400;}
+
+/* ============================================================
+   COMPARISON TABLE
+   ============================================================ */
+.table-wrap{overflow-x:auto;}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:640px;
+}
+th,td{
+  padding:18px 20px;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+}
+th{
+  font-family:var(--f-mono);
+  font-size:11px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:500;
+}
+th:not(:first-child), td:not(:first-child){
+  font-family:var(--f-mono);
+  text-align:right;
+}
+td:first-child{color:var(--muted);}
+tr:hover td{background:var(--surface);}
+.hl-col{color:var(--accent) !important;}
+
+/* ============================================================
+   RESERVE / FORM
+   ============================================================ */
+.reserve-box{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:56px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:64px;
+}
+.reserve-copy h2{font-size:clamp(28px,4vw,42px);margin-bottom:20px;}
+.reserve-copy p{color:var(--muted);margin-bottom:28px;max-width:380px;}
+.reserve-copy ul{display:flex;flex-direction:column;gap:14px;}
+.reserve-copy li{
+  display:flex;
+  gap:12px;
+  font-size:14px;
+  color:var(--text);
+}
+.reserve-copy li::before{
+  content:"";
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--accent-2);
+  margin-top:7px;
+  flex:none;
+}
+
+.field{margin-bottom:22px;}
+.field label{
+  display:block;
+  font-size:12px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+.field input,.field select{
+  width:100%;
+  background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--text);
+  padding:14px 16px;
+  font-family:var(--f-body);
+  font-size:14px;
+  border-radius:var(--radius);
+  transition:border-color 0.2s ease;
+}
+.field input:focus,.field select:focus{border-color:var(--accent);outline:none;}
+.range-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.range-row output{font-family:var(--f-mono);color:var(--accent);font-weight:700;}
+input[type="range"]{
+  width:100%;
+  accent-color:var(--accent);
+  height:4px;
+}
+.form-success{
+  display:none;
+  text-align:center;
+  padding:40px 0;
+}
+.form-success svg{margin:0 auto 20px;}
+.form-success.show{display:block;}
+.reserve-form.hide{display:none;}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{padding:64px 0 40px;}
+.footer-top{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:40px;
+  margin-bottom:56px;
+}
+.footer-brand p{color:var(--muted);font-size:13px;margin-top:14px;max-width:260px;}
+.footer-col h4{
+  font-size:12px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:18px;
+}
+.footer-col ul{display:flex;flex-direction:column;gap:12px;font-size:14px;}
+.footer-col a:hover{color:var(--accent);}
+.footer-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-top:1px solid var(--line);
+  padding-top:28px;
+  font-size:12px;
+  color:var(--muted);
+  flex-wrap:wrap;
+  gap:16px;
+}
+.socials{display:flex;gap:16px;}
+.socials a{
+  width:34px;height:34px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color 0.2s ease, color 0.2s ease;
+}
+.socials a:hover{border-color:var(--accent);color:var(--accent);}
+.socials svg{width:16px;height:16px;}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr;}
+  .hero-art{order:-1;}
+  .perf-layout,.config,.reserve-box{grid-template-columns:1fr;}
+  .config{padding:36px;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+  .gallery{grid-template-columns:1fr;}
+}
+@media (max-width:640px){
+  .nav-links,.nav .btn-ghost{display:none;}
+  .nav-toggle{display:block;}
+  .hud{grid-template-columns:1fr;gap:32px;}
+  .section{padding:80px 0;}
+  .reserve-box{padding:32px;}
+  .footer-top{grid-template-columns:1fr;}
+  .section-head{flex-direction:column;align-items:flex-start;}
+}
+
+/* mobile drawer */
+.mobile-drawer{
+  position:fixed;
+  inset:0;
+  top:70px;
+  background:var(--bg);
+  z-index:99;
+  padding:40px 32px;
+  transform:translateX(100%);
+  transition:transform 0.35s ease;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+.mobile-drawer.open{transform:translateX(0);}
+.mobile-drawer a{font-size:22px;font-family:var(--f-display);text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav class="nav">
+  <div class="wrap">
+    <a href="#top" class="logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M2 15 L9 8 L13 11 L22 4 L20 9 L22 14 L13 13 L9 17 Z" fill="var(--accent)"/></svg>
+      KESTREL
+    </a>
+    <ul class="nav-links">
+      <li><a href="#design">Design</a></li>
+      <li><a href="#performance">Performance</a></li>
+      <li><a href="#configurator">Configurator</a></li>
+      <li><a href="#specs">Specs</a></li>
+    </ul>
+    <a href="#reserve" class="btn btn-ghost" style="margin-right:14px;">Reserve</a>
+    <button class="nav-toggle" aria-label="Toggle menu" id="navToggle"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="#design">Design</a>
+  <a href="#performance">Performance</a>
+  <a href="#configurator">Configurator</a>
+  <a href="#specs">Specs</a>
+  <a href="#reserve">Reserve</a>
+</div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero" id="top">
+  <div class="hero-grid-lines"></div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <div class="eyebrow">Kestrel GT-1 / All-Electric</div>
+      <h1>Built for<br><span>Velocity.</span></h1>
+      <p>Twin-motor architecture, a 900V core, and a body shaped entirely by airflow. The GT-1 doesn't chase numbers — it just happens to hold most of them.</p>
+      <div class="hero-actions">
+        <a href="#reserve" class="btn btn-primary">Reserve Yours — $500</a>
+        <a href="#performance" class="btn btn-ghost">See Performance ↓</a>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <svg viewBox="0 0 640 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="carBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--car-color)"/>
+            <stop offset="100%" stop-color="#0a0b0d"/>
+          </linearGradient>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="330" cy="230" rx="260" ry="30" fill="url(#glow)"/>
+        <!-- car silhouette -->
+        <path d="M60,215 C55,180 80,150 130,140 L190,110 C230,92 300,86 380,90 L470,98 C520,102 555,120 580,150 L600,175 L600,215 L560,215 C558,196 542,181 522,181 C502,181 486,196 484,215 L200,215 C198,196 182,181 162,181 C142,181 126,196 124,215 Z" fill="url(#carBody)" stroke="#000" stroke-width="1.5"/>
+        <!-- cabin glass -->
+        <path d="M195,138 L235,102 C260,94 320,90 375,95 L440,105 L410,140 Z" fill="#0a0b0d" opacity="0.85"/>
+        <!-- light strip -->
+        <path d="M560,140 L595,152 L595,163 L558,158 Z" fill="var(--accent-2)"/>
+        <path d="M64,182 L100,178 L100,188 L66,192 Z" fill="var(--accent)"/>
+        <!-- wheels -->
+        <circle cx="162" cy="215" r="34" fill="#0a0b0d" stroke="#33363c" stroke-width="3"/>
+        <circle cx="162" cy="215" r="14" fill="#33363c"/>
+        <circle cx="522" cy="215" r="34" fill="#0a0b0d" stroke="#33363c" stroke-width="3"/>
+        <circle cx="522" cy="215" r="14" fill="#33363c"/>
+        <!-- side accent stripe -->
+        <path d="M130,168 L470,150 L470,156 L130,174 Z" fill="var(--accent)" opacity="0.85"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="hud">
+      <div class="gauge reveal" data-gauge data-value="2.9" data-max="6" data-suffix="s" data-invert="true">
+        <div class="gauge-ring">
+          <svg viewBox="0 0 96 96" width="96" height="96">
+            <circle class="track" cx="48" cy="48" r="40"/>
+            <circle class="fill" cx="48" cy="48" r="40"/>
+          </svg>
+          <div class="gauge-value"><span data-count>0.0</span>s</div>
+        </div>
+        <div class="gauge-label">0–60 MPH<strong>LAUNCH MODE</strong></div>
+      </div>
+
+      <div class="gauge reveal" data-gauge data-value="205" data-max="220" data-suffix="">
+        <div class="gauge-ring">
+          <svg viewBox="0 0 96 96" width="96" height="96">
+            <circle class="track" cx="48" cy="48" r="40"/>
+            <circle class="fill" cx="48" cy="48" r="40"/>
+          </svg>
+          <div class="gauge-value"><span data-count>0</span></div>
+        </div>
+        <div class="gauge-label">TOP SPEED MPH<strong>ELECTRONIC LTD</strong></div>
+      </div>
+
+      <div class="gauge reveal" data-gauge data-value="320" data-max="400" data-suffix="">
+        <div class="gauge-ring">
+          <svg viewBox="0 0 96 96" width="96" height="96">
+            <circle class="track" cx="48" cy="48" r="40"/>
+            <circle class="fill" cx="48" cy="48" r="40"/>
+          </svg>
+          <div class="gauge-value"><span data-count>0</span></div>
+        </div>
+        <div class="gauge-label">RANGE (MILES)<strong>EPA ESTIMATED</strong></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span><em>1,020</em> HP COMBINED &nbsp;—&nbsp; CARBON MONOCOQUE &nbsp;—&nbsp; <em>900V</em> ARCHITECTURE &nbsp;—&nbsp; TORQUE VECTORING AWD &nbsp;—&nbsp; 320 MI RANGE</span>
+    <span><em>1,020</em> HP COMBINED &nbsp;—&nbsp; CARBON MONOCOQUE &nbsp;—&nbsp; <em>900V</em> ARCHITECTURE &nbsp;—&nbsp; TORQUE VECTORING AWD &nbsp;—&nbsp; 320 MI RANGE</span>
+  </div>
+</div>
+
+<!-- ============================================================
+     DESIGN GALLERY
+     ============================================================ -->
+<section class="section" id="design">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Shaped by<br>Air, Not Trend.</h2>
+      <p>Every surface on the GT-1 earns its place in a wind tunnel before it earns its place on the car.</p>
+    </div>
+  </div>
+  <div class="gallery">
+    <div class="gallery-card reveal">
+      <div>
+        <div class="gallery-idx">01 / FRONT</div>
+        <h3>Active Aero Splitter</h3>
+        <p>Deploys at 45mph, cutting front lift by 40%.</p>
+      </div>
+      <div class="render">
+        <svg viewBox="0 0 200 100" fill="none">
+          <path d="M20,80 C25,50 60,30 100,30 C140,30 175,50 180,80 Z" fill="none" stroke="var(--car-color)" stroke-width="2.5"/>
+          <rect x="55" y="68" width="90" height="6" fill="var(--accent)"/>
+          <circle cx="70" cy="45" r="6" fill="var(--accent-2)"/>
+          <circle cx="130" cy="45" r="6" fill="var(--accent-2)"/>
+        </svg>
+      </div>
+    </div>
+    <div class="gallery-card reveal">
+      <div>
+        <div class="gallery-idx">02 / PROFILE</div>
+        <h3>Continuous Beltline</h3>
+        <p>A single unbroken line from headlamp to diffuser.</p>
+      </div>
+      <div class="render">
+        <svg viewBox="0 0 200 100" fill="none">
+          <path d="M15,70 C40,50 70,45 100,46 C140,47 170,52 190,68" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <path d="M15,80 L190,80" stroke="var(--car-color)" stroke-width="1" opacity="0.4"/>
+          <circle cx="45" cy="80" r="10" fill="none" stroke="var(--car-color)" stroke-width="2"/>
+          <circle cx="160" cy="80" r="10" fill="none" stroke="var(--car-color)" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+    <div class="gallery-card reveal">
+      <div>
+        <div class="gallery-idx">03 / REAR</div>
+        <h3>Full-Width Light Bar</h3>
+        <p>A single LED signature, 4mm thin, visible day or night.</p>
+      </div>
+      <div class="render">
+        <svg viewBox="0 0 200 100" fill="none">
+          <path d="M20,60 C25,35 60,20 100,20 C140,20 175,35 180,60 L165,80 L35,80 Z" fill="none" stroke="var(--car-color)" stroke-width="2.5"/>
+          <rect x="35" y="45" width="130" height="5" fill="var(--accent-2)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PERFORMANCE
+     ============================================================ -->
+<section class="section" id="performance">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Power That<br>Arrives Instantly.</h2>
+      <p>Two permanent-magnet motors, one per axle, deliver full torque from a standstill — no lag, no gearbox, no compromise.</p>
+    </div>
+
+    <div class="perf-layout">
+      <div class="perf-graph reveal">
+        <svg viewBox="0 0 400 200" fill="none">
+          <line x1="0" y1="180" x2="400" y2="180" stroke="var(--line)"/>
+          <line x1="0" y1="120" x2="400" y2="120" stroke="var(--line)" stroke-dasharray="4 4"/>
+          <line x1="0" y1="60" x2="400" y2="60" stroke="var(--line)" stroke-dasharray="4 4"/>
+          <path class="perf-path" d="M10,170 C60,60 110,30 160,28 C220,26 280,45 340,90 C365,110 385,140 395,165" stroke="var(--accent)" stroke-width="3" fill="none"/>
+          <path class="perf-path" d="M10,175 C70,150 130,60 190,55 C250,50 300,80 340,120 C365,140 385,155 395,168" stroke="var(--accent-2)" stroke-width="3" fill="none" style="transition-delay:0.15s"/>
+        </svg>
+        <div class="perf-graph-label">
+          <span><span style="color:var(--accent)">■</span> Torque (lb-ft)</span>
+          <span><span style="color:var(--accent-2)">■</span> Power (hp)</span>
+        </div>
+      </div>
+
+      <dl class="spec-list reveal">
+        <div class="spec-row"><dt>Combined Output</dt><dd>1,020 hp</dd></div>
+        <div class="spec-row"><dt>Peak Torque</dt><dd>910 lb-ft</dd></div>
+        <div class="spec-row"><dt>0–60 mph</dt><dd>2.9 sec</dd></div>
+        <div class="spec-row"><dt>0–100 mph</dt><dd>6.1 sec</dd></div>
+        <div class="spec-row"><dt>Top Speed</dt><dd>205 mph</dd></div>
+        <div class="spec-row"><dt>Drivetrain</dt><dd>Dual-Motor AWD</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONFIGURATOR
+     ============================================================ -->
+<section class="section" id="configurator">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Make It<br>Yours.</h2>
+      <p>Five finishes. Two wheel styles. One car that never looks the same twice.</p>
+    </div>
+
+    <div class="config reveal">
+      <div class="config-art">
+        <svg viewBox="0 0 640 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="330" cy="205" rx="230" ry="22" fill="var(--accent)" opacity="0.12"/>
+          <path d="M60,180 C55,150 80,125 130,116 L190,92 C230,77 300,72 380,76 L470,83 C520,87 555,103 580,128 L600,150 L600,180 L560,180 C558,164 542,151 522,151 C502,151 486,164 484,180 L200,180 C198,164 182,151 162,151 C142,151 126,164 124,180 Z" fill="var(--car-color)" stroke="#000" stroke-width="1.5" style="transition:fill 0.35s ease;"/>
+          <path d="M195,114 L235,86 C260,79 320,75 375,80 L440,89 L410,118 Z" fill="#0a0b0d" opacity="0.85"/>
+          <circle cx="162" cy="180" r="30" fill="#0a0b0d" stroke="#33363c" stroke-width="3"/>
+          <circle cx="522" cy="180" r="30" fill="#0a0b0d" stroke="#33363c" stroke-width="3"/>
+          <g id="wheelAero">
+            <circle cx="162" cy="180" r="12" fill="#33363c"/>
+            <circle cx="522" cy="180" r="12" fill="#33363c"/>
+          </g>
+          <g id="wheelForged" style="display:none;">
+            <path d="M162,164 L162,196 M146,180 L178,180 M150,168 L174,192 M174,168 L150,192" stroke="#55585f" stroke-width="2" transform="translate(0,0)"/>
+            <path d="M522,164 L522,196 M506,180 L538,180 M510,168 L534,192 M534,168 L510,192" stroke="#55585f" stroke-width="2"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="config-panel">
+        <h3>Exterior Finish</h3>
+        <span class="config-current" id="colorName">Graphite Grey</span>
+        <div class="swatches" id="swatches">
+          <button class="swatch active" style="background:#d6d8db" data-color="#d6d8db" data-name="Graphite Grey" aria-label="Graphite Grey"></button>
+          <button class="swatch" style="background:#e0642a" data-color="#e0642a" data-name="Ember Copper" aria-label="Ember Copper"></button>
+          <button class="swatch" style="background:#f2f1ec" data-color="#f2f1ec" data-name="Arctic White" aria-label="Arctic White"></button>
+          <button class="swatch" style="background:#1f5c53" data-color="#1f5c53" data-name="Deep Teal" aria-label="Deep Teal"></button>
+          <button class="swatch" style="background:#7a1c1c" data-color="#7a1c1c" data-name="Racing Red" aria-label="Racing Red"></button>
+        </div>
+
+        <h3 style="font-size:16px;">Wheel Style</h3>
+        <div class="toggle-group" id="wheelToggle">
+          <button class="active" data-wheel="aero">Aero — 20"</button>
+          <button data-wheel="forged">Forged — 21"</button>
+        </div>
+        <p class="toggle-caption">Forged wheels trade 1.4% range for improved brake cooling.</p>
+
+        <div class="price-tag" id="priceTag">$118,400 <span>as configured</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SPECS TABLE
+     ============================================================ -->
+<section class="section" id="specs">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Two Trims.<br>One Standard.</h2>
+      <p>Performance adds a second motor and a taller top-speed governor. Everything else carries over.</p>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr><th>Specification</th><th>Standard</th><th class="hl-col">Performance</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Power</td><td>650 hp</td><td class="hl-col">1,020 hp</td></tr>
+          <tr><td>0–60 mph</td><td>3.8 s</td><td class="hl-col">2.9 s</td></tr>
+          <tr><td>Top Speed</td><td>180 mph</td><td class="hl-col">205 mph</td></tr>
+          <tr><td>Range (EPA est.)</td><td>340 mi</td><td class="hl-col">320 mi</td></tr>
+          <tr><td>Drivetrain</td><td>Rear-Motor RWD</td><td class="hl-col">Dual-Motor AWD</td></tr>
+          <tr><td>Curb Weight</td><td>3,980 lb</td><td class="hl-col">4,120 lb</td></tr>
+          <tr><td>DC Fast Charge (10–80%)</td><td>21 min</td><td class="hl-col">19 min</td></tr>
+          <tr><td>Starting Price</td><td>$94,900</td><td class="hl-col">$118,400</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     RESERVE
+     ============================================================ -->
+<section class="section" id="reserve" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="reserve-box reveal">
+      <div class="reserve-copy">
+        <div class="eyebrow">Step 01 of 03</div>
+        <h2>Reserve<br>the GT-1.</h2>
+        <p>A refundable deposit holds your build slot and locks today's pricing. Full configuration happens closer to delivery.</p>
+        <ul>
+          <li>Fully refundable, any time before production</li>
+          <li>Priority build slot in your delivery region</li>
+          <li>Locked pricing, protected from future increases</li>
+        </ul>
+      </div>
+
+      <div>
+        <form class="reserve-form" id="reserveForm">
+          <div class="field">
+            <label for="rName">Full name</label>
+            <input id="rName" type="text" placeholder="Jordan Ellis" required>
+          </div>
+          <div class="field">
+            <label for="rEmail">Email</label>
+            <input id="rEmail" type="email" placeholder="jordan@email.com" required>
+          </div>
+          <div class="field">
+            <label for="rTrim">Trim</label>
+            <select id="rTrim">
+              <option>Standard — $94,900</option>
+              <option>Performance — $118,400</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="range-row">
+              <label for="rDeposit" style="margin:0;">Deposit amount</label>
+              <output id="depositOut">$1,000</output>
+            </div>
+            <input id="rDeposit" type="range" min="500" max="5000" step="250" value="1000">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Confirm Reservation</button>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="var(--accent-2)" stroke-width="2"/><path d="M14,25 L21,32 L34,17" stroke="var(--accent-2)" stroke-width="2.5" fill="none"/></svg>
+          <h3 style="font-size:20px;margin-bottom:8px;">Reservation Received</h3>
+          <p style="color:var(--muted);font-size:14px;">Check your inbox for build-slot confirmation and next steps.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="logo">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M2 15 L9 8 L13 11 L22 4 L20 9 L22 14 L13 13 L9 17 Z" fill="var(--accent)"/></svg>
+          KESTREL
+        </a>
+        <p>Precision electric performance, engineered in-house from motor to monocoque.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Vehicle</h4>
+        <ul>
+          <li><a href="#design">Design</a></li>
+          <li><a href="#performance">Performance</a></li>
+          <li><a href="#specs">Specifications</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Ownership</h4>
+        <ul>
+          <li><a href="#configurator">Configure</a></li>
+          <li><a href="#reserve">Reserve</a></li>
+          <li><a href="#top">Charging Network</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#top">About</a></li>
+          <li><a href="#top">Careers</a></li>
+          <li><a href="#top">Press</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Kestrel Motors. All rights reserved.</span>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1"/></svg></a>
+        <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4 L20 20 M20 4 L4 20"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 10 L15 12 L11 14 Z" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   MOBILE NAV
+   ============================================================ */
+const navToggle = document.getElementById('navToggle');
+const mobileDrawer = document.getElementById('mobileDrawer');
+navToggle.addEventListener('click', () => {
+  navToggle.classList.toggle('open');
+  mobileDrawer.classList.toggle('open');
+});
+mobileDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  navToggle.classList.remove('open');
+  mobileDrawer.classList.remove('open');
+}));
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* ============================================================
+   GAUGE / COUNTER ANIMATION
+   ============================================================ */
+function animateCount(el, target, decimals, duration = 1400) {
+  const start = performance.now();
+  const startVal = 0;
+  function tick(now) {
+    const p = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const val = startVal + (target - startVal) * eased;
+    el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+const gauges = document.querySelectorAll('[data-gauge]');
+const gaugeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const value = parseFloat(el.dataset.value);
+    const max = parseFloat(el.dataset.max);
+    const invert = el.dataset.invert === 'true';
+    const ratio = invert ? (max - value) / max : value / max;
+    const circumference = 251.2;
+    const fillCircle = el.querySelector('.fill');
+    fillCircle.style.strokeDashoffset = circumference * (1 - ratio);
+    const countEl = el.querySelector('[data-count]');
+    const decimals = value % 1 !== 0 ? 1 : 0;
+    animateCount(countEl, value, decimals);
+    gaugeObserver.unobserve(el);
+  });
+}, { threshold: 0.4 });
+gauges.forEach(g => gaugeObserver.observe(g));
+
+/* ============================================================
+   CONFIGURATOR
+   ============================================================ */
+const swatchButtons = document.querySelectorAll('.swatch');
+const colorNameEl = document.getElementById('colorName');
+swatchButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.documentElement.style.setProperty('--car-color', btn.dataset.color);
+    colorNameEl.textContent = btn.dataset.name;
+    swatchButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+const wheelButtons = document.querySelectorAll('#wheelToggle button');
+const wheelAero = document.getElementById('wheelAero');
+const wheelForged = document.getElementById('wheelForged');
+const priceTag = document.getElementById('priceTag');
+wheelButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    wheelButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const isForged = btn.dataset.wheel === 'forged';
+    wheelAero.style.display = isForged ? 'none' : 'block';
+    wheelForged.style.display = isForged ? 'block' : 'none';
+    priceTag.innerHTML = (isForged ? '$120,900' : '$118,400') + ' <span>as configured</span>';
+  });
+});
+
+/* ============================================================
+   RESERVE FORM
+   ============================================================ */
+const depositInput = document.getElementById('rDeposit');
+const depositOut = document.getElementById('depositOut');
+depositInput.addEventListener('input', () => {
+  depositOut.textContent = '$' + Number(depositInput.value).toLocaleString();
+});
+
+const reserveForm = document.getElementById('reserveForm');
+const formSuccess = document.getElementById('formSuccess');
+reserveForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  reserveForm.classList.add('hide');
+  formSuccess.classList.add('show');
+});
+</script>
+</body>
+</html>
